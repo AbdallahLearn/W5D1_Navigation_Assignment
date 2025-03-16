@@ -24,14 +24,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.w5d1_navigation.ui.theme.W5D1_NavigationTheme
 
 sealed class Screen(val route: String, val title: String, val showBackButton: Boolean) {
     object FirstActivity : Screen("MainActivity", "First Screen", false)
-    object SecondActivity : Screen("SecondActivity", "Second Screen", true)
+    object SecondActivity : Screen("SecondActivity/{name}", "Second Screen", true)
     object ThirdActivity : Screen("ThirdActivity", "Third Screen", true)
 }
 
@@ -83,10 +85,10 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 // First Screen Button
                                 Button(
-                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    modifier = Modifier.width(100.dp), // Set a fixed width for the button
                                     shape = RoundedCornerShape(10.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Green,
+                                        containerColor = Color.Gray,
                                     ),
                                     onClick = {
                                         navController.navigate(Screen.FirstActivity.route)
@@ -104,7 +106,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
                                         Text(
-                                            text = "First",
+                                            text = "1rt",
                                             textAlign = TextAlign.Center,
                                             fontSize = 16.sp
                                         )
@@ -113,10 +115,10 @@ class MainActivity : ComponentActivity() {
 
                                 // Second Screen Button
                                 Button(
-                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    modifier = Modifier.width(100.dp), // Set a fixed width for the button
                                     shape = RoundedCornerShape(10.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Green,
+                                        containerColor = Color.Gray,
                                     ),
                                     onClick = {
                                         navController.navigate(Screen.SecondActivity.route)
@@ -134,7 +136,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
                                         Text(
-                                            text = "Second",
+                                            text = "2nd",
                                             textAlign = TextAlign.Center,
                                             fontSize = 16.sp
                                         )
@@ -143,10 +145,10 @@ class MainActivity : ComponentActivity() {
 
                                 // Third Screen Button
                                 Button(
-                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    modifier = Modifier.width(100.dp), // Set a fixed width for the button
                                     shape = RoundedCornerShape(10.dp),
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Green,
+                                        containerColor = Color.Gray,
                                     ),
                                     onClick = {
                                         navController.navigate(Screen.ThirdActivity.route)
@@ -164,7 +166,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                         Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
                                         Text(
-                                            text = "Third",
+                                            text = "3rd",
                                             textAlign = TextAlign.Center,
                                             fontSize = 16.sp
                                         )
@@ -190,12 +192,22 @@ class MainActivity : ComponentActivity() {
                                     showBackButton = Screen.FirstActivity.showBackButton
                                 }
                             }
-                            composable(Screen.SecondActivity.route) {
-                                SecondScreen(navController) {
+                            composable(
+                                    route = Screen.SecondActivity.route,
+                            arguments = listOf(
+                                navArgument("name") { type = NavType.StringType } // Define the argument
+                            )
+                            ) { backStackEntry ->
+                            val name = backStackEntry.arguments?.getString("name") // Retrieve the argument
+                            SecondScreen(
+                                navController = navController,
+                                onTitleUpdate = {
                                     currentTitle = Screen.SecondActivity.title
                                     showBackButton = Screen.SecondActivity.showBackButton
-                                }
-                            }
+                                },
+                                name = name // Pass the name to SecondScreen
+                            )
+                        }
                             composable(Screen.ThirdActivity.route) {
                                 ThirdScreen(navController) {
                                     currentTitle = Screen.ThirdActivity.title
@@ -226,21 +238,23 @@ fun FirstScreen(navController: NavController, onTitleUpdate: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//        TextField(
-//            value= text, onValueChange = {text = it},
-//            modifier = Modifier.fillMaxWidth(),
-//            placeholder = {
-//                Text(
-//                    text = "Enter you name "
-//                )
-//            }
-//        )
-//        Button(onClick = {}){
-//            Text(
-//                "send text"
-//            )
-//
-//        }
+        TextField(
+            value= text, onValueChange = {text = it},
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(
+                    text = "Enter you name "
+                )
+            }
+        )
+        Button(onClick = {
+            navController.navigate("SecondActivity/${text}")
+        }){
+            Text(
+                "send text"
+            )
+
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
         Text("This is the First Screen")
@@ -253,7 +267,9 @@ fun FirstScreen(navController: NavController, onTitleUpdate: () -> Unit) {
 }
 
 @Composable
-fun SecondScreen(navController: NavController, onTitleUpdate: () -> Unit) {
+fun SecondScreen( navController: NavController,
+                  onTitleUpdate: () -> Unit,
+                  name: String?) {
     LaunchedEffect(Unit) {
         onTitleUpdate() // Update the title and back button state
     }
@@ -265,6 +281,13 @@ fun SecondScreen(navController: NavController, onTitleUpdate: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(){
+            Text(
+                text = "Hello, ${name?: "User"}"
+            )
+        }
+
+        Spacer(modifier= Modifier.height(10.dp))
         Text("This is the Second Screen")
         Button(onClick = {
             navController.navigate(Screen.ThirdActivity.route)
