@@ -4,15 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -62,7 +72,108 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         )
+                    },
+                    bottomBar = {
+                        BottomAppBar(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                            ) {
+                                // First Screen Button
+                                Button(
+                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Green,
+                                    ),
+                                    onClick = {
+                                        navController.navigate(Screen.FirstActivity.route)
+                                    }
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally // Align icon and text vertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Home,
+                                            contentDescription = "Home",
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
+                                        Text(
+                                            text = "First",
+                                            textAlign = TextAlign.Center,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                }
+
+                                // Second Screen Button
+                                Button(
+                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Green,
+                                    ),
+                                    onClick = {
+                                        navController.navigate(Screen.SecondActivity.route)
+                                    }
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally // Align icon and text vertically
+                                    )  {
+                                        Icon(
+                                            imageVector = Icons.Default.Person,
+                                            contentDescription = "Profile",
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
+                                        Text(
+                                            text = "Second",
+                                            textAlign = TextAlign.Center,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                }
+
+                                // Third Screen Button
+                                Button(
+                                    modifier = Modifier.width(120.dp), // Set a fixed width for the button
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Green,
+                                    ),
+                                    onClick = {
+                                        navController.navigate(Screen.ThirdActivity.route)
+                                    }
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally // Align icon and text vertically
+                                    )  {
+                                        Icon(
+                                            imageVector = Icons.Default.Settings,
+                                            contentDescription = "Settings",
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp)) // Add spacing between icon and text
+                                        Text(
+                                            text = "Third",
+                                            textAlign = TextAlign.Center,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     }
+
                 ) { innerPadding ->
                     Box(
                         modifier = Modifier
@@ -101,6 +212,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun FirstScreen(navController: NavController, onTitleUpdate: () -> Unit) {
+    var text by remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(Unit) {
         onTitleUpdate() // Update the title and back button state
     }
@@ -112,6 +226,23 @@ fun FirstScreen(navController: NavController, onTitleUpdate: () -> Unit) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+//        TextField(
+//            value= text, onValueChange = {text = it},
+//            modifier = Modifier.fillMaxWidth(),
+//            placeholder = {
+//                Text(
+//                    text = "Enter you name "
+//                )
+//            }
+//        )
+//        Button(onClick = {}){
+//            Text(
+//                "send text"
+//            )
+//
+//        }
+
+        Spacer(modifier = Modifier.height(10.dp))
         Text("This is the First Screen")
         Button(onClick = {
             navController.navigate(Screen.SecondActivity.route)
